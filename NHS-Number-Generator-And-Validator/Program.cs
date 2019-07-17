@@ -5,13 +5,14 @@ namespace NHS_Number_Generator_And_Validator
 {
     class Program
     {
+        [STAThread]
         static void Main()
         {
             while (true)
             {
                 int selection = 0;
 
-                Console.WriteLine("1. Generate NHS Number");
+                Console.WriteLine("1. Generate NHS Number & Copy To Clipboard");
                 Console.WriteLine("2. Validate NHS Number");
                 Console.WriteLine("3. Quit");
                 Console.WriteLine();
@@ -48,13 +49,15 @@ namespace NHS_Number_Generator_And_Validator
                 string nhsNumber = "";
                 int checksum = 0;
 
+                var random = new Random();
+
                 for (int i = 1; i < 10; i++)
                 {
-                    var random = new Random();
                     int digit = digits[random.Next(digits.Count)];
 
-                    if (i == 3 || i == 6) { nhsNumber = nhsNumber + digit.ToString() + " "; }
-                    else { nhsNumber = nhsNumber + digit.ToString(); }
+                    nhsNumber =
+                        (i == 3 || i == 6) ? nhsNumber + digit.ToString() + " "
+                                           : nhsNumber + digit.ToString();
 
                     checksum = checksum + (digit * (11 - i));
                 }
@@ -65,6 +68,8 @@ namespace NHS_Number_Generator_And_Validator
 
                 if (checksum == 10) { OutputNhsNumber(); }
                 else { Console.WriteLine(nhsNumber); }
+
+                System.Windows.Forms.Clipboard.SetText(nhsNumber);
             }
 
             OutputNhsNumber();
