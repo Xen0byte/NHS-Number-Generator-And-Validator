@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace NHS_Number_Generator_And_Validator
 {
-    class Program
+    class ValidateGenerateNhsNumber
     {
         [STAThread]
         static void Main()
@@ -79,7 +81,69 @@ namespace NHS_Number_Generator_And_Validator
 
         private static void ValidateNhsNumber()
         {
-            throw new NotImplementedException();
+            Console.Write("Enter NHS Number: ");
+            string enteredValue = Console.ReadLine();
+            string formattedValue = Regex.Replace(enteredValue, @"\s+", "");
+
+            if (formattedValue.Length != 10)
+            {
+                Console.WriteLine("\"{0}\" Is Not Ten Characters Long", enteredValue);
+                Console.WriteLine();
+                return;
+            }
+
+            else
+            {
+                try { Convert.ToInt64(formattedValue); }
+                catch
+                {
+                    Console.WriteLine("\"{0}\" Is Not Numeric-Only", enteredValue);
+                    Console.WriteLine();
+                    return;
+                }
+            }
+
+            void ValidateInput()
+            {
+                int[] formattedValueArray = formattedValue.Select(value => Convert.ToInt32(value) - 48).ToArray();
+
+                int checksum = 0;
+
+                for (int i = 1; i < 10; i++)
+                {
+                    checksum = checksum + (formattedValueArray[i - 1] * (11 - i));
+                }
+
+                checksum = 11 - (checksum % 11);
+
+                if (checksum == 11) { checksum = 0; }
+
+                if (checksum == 10)
+                {
+                    Console.WriteLine("Computed Check Digit \"{0}\" Is Invalid", checksum);
+                    if (checksum != formattedValueArray[9]) { Console.WriteLine("Computed Check Digit \"{0}\" Does Not Match Entered Check Digit \"{1}\"", checksum, formattedValueArray[9]); }
+                    Console.WriteLine("\"{0}\" Is Not A Valid NHS Number", enteredValue);
+                    Console.WriteLine();
+                    return;
+                }
+
+                if (checksum == formattedValueArray[9])
+                {
+                    Console.WriteLine("\"{0}\" Is A Valid NHS Number", enteredValue);
+                    Console.WriteLine();
+                    return;
+                }
+
+                else if (checksum != formattedValueArray[9])
+                {
+                    Console.WriteLine("Computed Check Digit \"{0}\" Does Not Match Entered Check Digit \"{1}\"", checksum, formattedValueArray[9]);
+                    Console.WriteLine("\"{0}\" Is Not A Valid NHS Number", enteredValue);
+                    Console.WriteLine();
+                    return;
+                }
+            }
+
+            ValidateInput();
         }
 
         private static void Quit()
