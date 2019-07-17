@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NHS_Number_Generator_And_Validator
 {
@@ -40,7 +41,35 @@ namespace NHS_Number_Generator_And_Validator
 
         private static void GenerateNhsNumber()
         {
-            throw new NotImplementedException();
+            IReadOnlyList<int> digits = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            void OutputNhsNumber()
+            {
+                string nhsNumber = "";
+                int checksum = 0;
+
+                for (int i = 1; i < 10; i++)
+                {
+                    var random = new Random();
+                    int digit = digits[random.Next(digits.Count)];
+
+                    if (i == 3 || i == 6) { nhsNumber = nhsNumber + digit.ToString() + " "; }
+                    else { nhsNumber = nhsNumber + digit.ToString(); }
+
+                    checksum = checksum + (digit * (11 - i));
+                }
+
+                checksum = 11 - (checksum % 11);
+                if (checksum == 11) { checksum = 0; }
+                nhsNumber = nhsNumber + checksum.ToString();
+
+                if (checksum == 10) { OutputNhsNumber(); }
+                else { Console.WriteLine(nhsNumber); }
+            }
+
+            OutputNhsNumber();
+
+            Console.WriteLine();
         }
 
         private static void ValidateNhsNumber()
