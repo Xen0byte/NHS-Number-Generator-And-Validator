@@ -14,7 +14,7 @@ namespace NHS_Number_Generator_And_Validator
             {
                 int selection = 0;
 
-                Console.WriteLine("1. Generate NHS Number & Copy To Clipboard");
+                Console.WriteLine("1. Generate NHS Number");
                 Console.WriteLine("2. Validate NHS Number");
                 Console.WriteLine("3. Quit");
                 Console.WriteLine();
@@ -69,7 +69,7 @@ namespace NHS_Number_Generator_And_Validator
                 nhsNumber = nhsNumber + checksum.ToString();
 
                 if (checksum == 10) { OutputNhsNumber(); }
-                else { Console.WriteLine(nhsNumber); }
+                else { Console.WriteLine(nhsNumber); Console.WriteLine("The NHS Number Has Been Copied To Your Clipboard"); }
 
                 System.Windows.Forms.Clipboard.SetText(nhsNumber);
             }
